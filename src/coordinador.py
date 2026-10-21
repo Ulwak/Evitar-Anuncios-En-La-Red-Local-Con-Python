@@ -10,4 +10,4 @@ try:
 except Exception as error_db:
     logs["database"].exception(f"Error al iniciar la base de datos: {error_db}")
     
-recibir_datos()
+datos, ip, puerto = recibir_datos()
