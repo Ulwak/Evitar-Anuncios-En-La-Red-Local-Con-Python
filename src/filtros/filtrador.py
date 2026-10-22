@@ -1,10 +1,12 @@
+import logging
+from datetime import datetime
 from pathlib import Path
 from dnslib import DNSRecord
-import logging
 
 log_conexiones = logging.getLogger("conexiones")
 log_ejecucion = logging.getLogger("ejecucion")
 dominios = set()
+lista_tuplas_dominios = []
 
 def cargar_lista():
     try:
@@ -34,6 +36,7 @@ def filtrar(set_dominios, datos):
     try:
         paquete = DNSRecord.parse(datos)
         dominio = str(paquete.questions[0].qname).lower().rstrip(".")
+        print(f"Recibidos datos de: {dominio}")
     except Exception as error_dns:
         log_conexiones.exception(f"Se produjo un error al procesar el DNS: {error_dns}")
         return False, None, None
@@ -45,3 +48,10 @@ def filtrar(set_dominios, datos):
             return False, dominio, paquete
     log_conexiones.info(f"Se permitio la conexion al dominio: {dominio}")
     return True, dominio , paquete
+
+def almacenar_consulta_dns(registrar_dominios, dominio, bloqueado, dispositivo):
+    tiempo_ahora = datetime.now().isoformat()
+    lista_tuplas_dominios.append((dominio, tiempo_ahora, bloqueado, dispositivo))
+    if len(lista_tuplas_dominios) >= 30:
+        registrar_dominios(lista_tuplas_dominios)
+        lista_tuplas_dominios.clear()
