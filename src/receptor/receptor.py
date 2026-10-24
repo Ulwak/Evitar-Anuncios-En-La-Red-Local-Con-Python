@@ -22,4 +22,5 @@ def recibir_datos():
                     log_red.exception(f"Ocurrio un error de red al recibir el paquete: {error_red}")
                     continue
                 log_red.info(f"Recibidos datos desde la direccion: {direccion[0]} {direccion[1]}")
+                print(f"Recibidos datos desde la direccion: {direccion[0]} {direccion[1]}")
                 yield datos, direccion, puerto
